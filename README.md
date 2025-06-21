@@ -1,0 +1,2 @@
+# altaylardantunaya
+altaylardan tunaya
