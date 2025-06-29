@@ -1,60 +1,189 @@
 import { Link } from "react-router-dom";
-import { Home, PlusCircle, Upload, Users, Sun, Moon } from "lucide-react";
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { useBlockchain } from "../context/BlockchainContext";
+import { Wallet, LogOut, Menu, X } from "lucide-react";
 
-export default function Navbar({ darkMode, toggleDarkMode }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-
+const Navbar = () => {
+  const { 
+    isInitialized, 
+    isLoading, 
+    error, 
+    account, 
+    balance, 
+    initialize, 
+    disconnect 
+  } = useBlockchain();
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
+  // Format account address for display
+  const formatAddress = (address) => {
+    if (!address) return "";
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  };
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+  
+  const handleConnectWallet = async () => {
+    try {
+      await initialize();
+    } catch (error) {
+      console.error("Failed to connect wallet:", error);
+    }
+  };
+  
+  const handleDisconnect = () => {
+    disconnect();
+  };
+  
   return (
-    <nav className="bg-blue-900 dark:bg-gray-800 shadow-md p-4 flex flex-col md:flex-row items-center md:justify-center gap-4 md:gap-8 relative">
+    <nav className="bg-blue-900 shadow-md p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        {/* Logo and Title */}
+        <div className="flex items-center">
+          <Link to="/" className="text-xl font-bold text-white">
+            Adli Blokzincir
+          </Link>
+        </div>
+        
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-6">
+          <Link to="/" className="text-blue-200 hover:text-white transition">
+            Ana Sayfa
+          </Link>
+          <Link to="/create-nft" className="text-blue-200 hover:text-white transition">
+            NFT Oluştur
+          </Link>
+          <Link to="/nfts" className="text-blue-200 hover:text-white transition">
+            NFT Listesi
+          </Link>
+          <Link to="/upload-evidence" className="text-blue-200 hover:text-white transition">
+            Delil Yükle
+          </Link>
+          <Link to="/dao-panel" className="text-blue-200 hover:text-white transition">
+            DAO Paneli
+          </Link>
+          <Link to="/payment-page" className="text-blue-200 hover:text-white transition">
+            Ödeme
+          </Link>
+        </div>
+        
+        {/* Wallet Connection */}
+        <div className="hidden md:flex items-center">
+          {!isInitialized ? (
+            <button
+              onClick={handleConnectWallet}
+              disabled={isLoading}
+              className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <Wallet className="mr-2 h-5 w-5" />
+              {isLoading ? "Bağlanıyor..." : "Cüzdan Bağla"}
+            </button>
+          ) : (
+            <div className="flex items-center">
+              <div className="mr-4 text-sm">
+                <div className="font-medium text-blue-200">{formatAddress(account)}</div>
+                <div className="text-blue-300">{balance ? `${parseFloat(balance).toFixed(4)} ETH` : ""}</div>
+              </div>
+              <button
+                onClick={handleDisconnect}
+                className="flex items-center bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </div>
+          )}
+        </div>
+        
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button onClick={toggleMenu} className="text-white">
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
       
-      <button 
-        className="md:hidden text-blue-200 dark:text-gray-300 hover:text-white transition"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Menüyü aç/kapat"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
-      </button>
-
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: menuOpen ? "auto" : 0, opacity: menuOpen ? 1 : 0 }}
-        className={`flex flex-col md:flex-row md:items-center md:justify-center gap-4 md:gap-8 overflow-hidden md:overflow-visible w-full md:w-auto`}
-      >
-        <Link to="/" className="flex items-center gap-1 text-blue-200 dark:text-gray-300 hover:text-white transition">
-          <Home size={18} />
-          Ana Sayfa
-        </Link>
-
-        <Link to="/create-nft" className="flex items-center gap-1 text-blue-200 dark:text-gray-300 hover:text-white transition">
-          <PlusCircle size={18} />
-          NFT Oluştur
-        </Link>
-
-        <Link to="/upload-evidence" className="flex items-center gap-1 text-blue-200 dark:text-gray-300 hover:text-white transition">
-          <Upload size={18} />
-          Delil Yükle
-        </Link>
-
-        <Link to="/dao-panel" className="flex items-center gap-1 text-blue-200 dark:text-gray-300 hover:text-white transition">
-          <Users size={18} />
-          DAO Paneli
-        </Link>
-      </motion.div>
-
-      {/* Tema Değiştirici Buton */}
-      <button
-        onClick={toggleDarkMode}
-        className="ml-auto md:ml-4 p-2 rounded-full bg-blue-700 dark:bg-gray-700 hover:bg-blue-600 dark:hover:bg-gray-600 transition text-white"
-        aria-label="Tema değiştir"
-      >
-        {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-      </button>
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden pt-4 pb-2">
+          <div className="flex flex-col space-y-3">
+            <Link 
+              to="/" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Ana Sayfa
+            </Link>
+            <Link 
+              to="/create-nft" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              NFT Oluştur
+            </Link>
+            <Link 
+              to="/nfts" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              NFT Listesi
+            </Link>
+            <Link 
+              to="/upload-evidence" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Delil Yükle
+            </Link>
+            <Link 
+              to="/dao-panel" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              DAO Paneli
+            </Link>
+            <Link 
+              to="/payment-page" 
+              className="text-blue-200 hover:text-white transition px-4 py-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Ödeme
+            </Link>
+            
+            {/* Mobile Wallet Connection */}
+            <div className="px-4 py-2">
+              {!isInitialized ? (
+                <button
+                  onClick={handleConnectWallet}
+                  disabled={isLoading}
+                  className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition w-full justify-center"
+                >
+                  <Wallet className="mr-2 h-5 w-5" />
+                  {isLoading ? "Bağlanıyor..." : "Cüzdan Bağla"}
+                </button>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <div className="text-sm">
+                    <div className="font-medium text-blue-200">{formatAddress(account)}</div>
+                    <div className="text-blue-300">{balance ? `${parseFloat(balance).toFixed(4)} ETH` : ""}</div>
+                  </div>
+                  <button
+                    onClick={handleDisconnect}
+                    className="flex items-center bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition justify-center"
+                  >
+                    <LogOut className="mr-2 h-5 w-5" />
+                    Bağlantıyı Kes
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
-}
+};
+
+export default Navbar; 
