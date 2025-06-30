@@ -89,7 +89,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## İletişim
 
-Proje Ekibi - [altaylardantunaya@gmail.com](mailto:altaylardantunaya@gmail.com)
+Proje Ekibi - [altaylardan.tunaya2345@gmail.com](mailto:altaylardan.tunaya2345@gmail.com)
 
 Proje Linki: [https://github.com/altaylardantunaya/adli-surec-takip](https://github.com/altaylardantunaya/adli-surec-takip)
 
