@@ -32,7 +32,7 @@ Bu proje, adli süreçlerin blokzincir teknolojisi kullanılarak şeffaf, güven
 
 1. Repoyu klonlayın:
    ```
-   git clone https://github.com/altaylardantunaya/adli-surec-takip.git
+   git clone https://github.com/yusufcolak1/altaylardantunaya/
    cd adli-surec-takip
    ```
 
@@ -91,5 +91,5 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 Proje Ekibi - [altaylardan.tunaya2345@gmail.com](mailto:altaylardan.tunaya2345@gmail.com)
 
-Proje Linki: [https://github.com/altaylardantunaya/adli-surec-takip](https://github.com/altaylardantunaya/adli-surec-takip)
+Proje Linki: [https://github.com/yusufcolak1/altaylardantunaya/](https://github.com/yusufcolak1/altaylardantunaya/)
 
